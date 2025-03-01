@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import GamePage from './pages/GamePage';
+import SharePage from './pages/SharePage';
 
-function App() {
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/play" element={<GamePage />} />
+      <Route path="/share" element={<SharePage />} />
+    </Routes>
   );
 }
-
-export default App;
