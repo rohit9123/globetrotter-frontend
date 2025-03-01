@@ -3,12 +3,14 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FiGlobe, FiPlay, FiShare2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 
 
 export default function LandingPage() {
 
   const navigate = useNavigate();
-  
+  const isAuthenticated = useAuth().isAuthenticated;
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Main Content */}
@@ -35,7 +37,7 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center justify-center gap-2"
-              onClick={() => navigate('/play')}
+              onClick={() => isAuthenticated ? navigate('/play') : navigate('/signin')}
             >
               <FiPlay className="text-xl" />
               Play Now
