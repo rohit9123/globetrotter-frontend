@@ -11,7 +11,7 @@ const LeaderboardPage = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(`https://globerotter-backend.onrender.com/api/leaderboard/${sortType}`);
-      const data = await response.json();
+      const data = response.data;
       setLeaderboard(data);
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
