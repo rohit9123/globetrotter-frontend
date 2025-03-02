@@ -43,8 +43,6 @@ export default function SignupPage() {
         username: name,
         email: email,
         password: password
-      },{
-        withCredentials: true,
       });
 
       // Redirect to home page after successful registration
