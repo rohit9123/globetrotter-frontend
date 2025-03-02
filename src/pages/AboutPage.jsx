@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function AboutPage() {
+  const navigate = useNavigate();
   return (
     <div className="max-w-3xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-2xl rounded-2xl mt-10 
       animate-float-in">
@@ -74,7 +77,9 @@ export default function AboutPage() {
         {/* CTA Section */}
         <div className="text-center mt-8 animate-pulse-slow">
           <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-full 
-            shadow-lg hover:shadow-xl hover:scale-105 transition-all font-bold text-lg">
+            shadow-lg hover:shadow-xl hover:scale-105 transition-all font-bold text-lg"
+            onClick={() => navigate("/play")}
+            >
             Start Playing Now!
           </button>
         </div>

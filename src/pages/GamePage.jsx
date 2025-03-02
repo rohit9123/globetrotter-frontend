@@ -1,15 +1,9 @@
-// src/pages/GamePage.jsx
 import { useEffect, useState } from 'react';
 import GameCard from '../components/GameCard';
 import Confetti from '../components/Confetti';
-import Score from '../components/Score';
-import ProgressBar from '../components/ProgressBar';
 import GameOverModal from '../components/GameOverModal';
 import GameHeader from '../components/GameHeader';
 import axios from 'axios';
-
-// Hardcoded questions (add 10 entries)
-
 
 export default function GamePage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -19,6 +13,7 @@ export default function GamePage() {
   const [questions, setQuestions] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
   const totalQuestions = questions.length;
 
   const handleGuess = (isCorrect) => {
@@ -29,7 +24,7 @@ export default function GamePage() {
     } else {
       setIncorrectAnswers(prev => prev + 1);
     }
-  
+
     // Move to next question after delay
     setTimeout(() => {
       setShowConfetti(false);
@@ -42,16 +37,19 @@ export default function GamePage() {
   };
 
   const getQuestions = async () => {
-    try{
+    try {
+      setIsLoading(true); // Start loading
       const response = await axios.get('https://globerotter-backend.onrender.com/api/game/questions', {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       setQuestions(response.data);
-    }catch(error){
+    } catch (error) {
       console.error('Error fetching questions:', error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -59,6 +57,8 @@ export default function GamePage() {
     setCurrentQuestion(0);
     setGameOver(false);
     setScore(0);
+    setCorrectAnswers(0);
+    setIncorrectAnswers(0);
     getQuestions();
     setShowConfetti(false);
   };
@@ -67,9 +67,21 @@ export default function GamePage() {
     getQuestions();
   }, []);
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <p className="text-gray-600">Loading questions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Game over state
   if (currentQuestion >= questions.length) {
     return (
-      
       <div className="text-center p-8">
         <h2 className="text-2xl font-bold mb-4">Game Over! 🎮</h2>
         <p className="text-xl mb-6">Your Score: {score}/100</p>
@@ -96,7 +108,7 @@ export default function GamePage() {
             const message = score === 100
               ? `I aced all 10 questions! Can you beat my perfect score? 🌍 ${window.location.href}`
               : `I scored ${score} points in Globetrotter! Try to beat me: ${window.location.href}`;
-            
+
             window.open(
               `https://wa.me/?text=${encodeURIComponent(message)}`,
               '_blank'
@@ -106,16 +118,22 @@ export default function GamePage() {
       )}
       <div className="max-w-2xl mx-auto">
         {/* Combined Header */}
-        <GameHeader score={score} totalQuestions={totalQuestions} currentQuestion={currentQuestion} correctAnswers={correctAnswers} incorrectAnswers={incorrectAnswers}/>
-  
+        <GameHeader
+          score={score}
+          totalQuestions={totalQuestions}
+          currentQuestion={currentQuestion}
+          correctAnswers={correctAnswers}
+          incorrectAnswers={incorrectAnswers}
+        />
+
         {/* GameCard */}
         <GameCard
-          id = {currentQ.id}
+          id={currentQ.id}
           clues={currentQ.clues}
           options={currentQ.options}
           onGuess={handleGuess}
         />
-  
+
         {/* Confetti */}
         {showConfetti && <Confetti />}
       </div>
