@@ -1,14 +1,11 @@
 // src/pages/LandingPage.jsx
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { FiGlobe, FiPlay, FiShare2 } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
-
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { FiGlobe, FiPlay, FiShare2 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function LandingPage() {
-
   const navigate = useNavigate();
   const isAuthenticated = useAuth().isAuthenticated;
   return (
@@ -25,10 +22,10 @@ export default function LandingPage() {
             <FiGlobe className="text-2xl text-blue-600" />
             <h1 className="text-3xl font-bold">Globetrotter Challenge</h1>
           </div>
-          
+
           <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            Test your travel knowledge with 10 cryptic destination puzzles. 
-            Can you score 100/100 and outsmart your friends?
+            Test your travel knowledge with 10 cryptic destination puzzles. Can
+            you score 100/100 and outsmart your friends?
           </p>
 
           {/* Action Buttons */}
@@ -37,7 +34,7 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center justify-center gap-2"
-              onClick={() => isAuthenticated ? navigate('/play') : navigate('/signin')}
+              onClick={() => navigate("/play")}
             >
               <FiPlay className="text-xl" />
               Play Now
@@ -47,7 +44,7 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-white text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 shadow-sm border border-blue-100"
-              onClick={() => navigate('/share')}
+              onClick={() => navigate("/share")}
             >
               <FiShare2 className="text-xl" />
               Challenge Friends
@@ -66,11 +63,16 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-3 gap-8 text-left mb-24">
           <div className="p-6 bg-white rounded-xl shadow-sm">
             <h3 className="font-bold mb-3">🌍 100+ Destinations</h3>
-            <p className="text-gray-600">From iconic landmarks to hidden gems</p>
+            <p className="text-gray-600">
+              From iconic landmarks to hidden gems
+            </p>
           </div>
           <div className="p-6 bg-white rounded-xl shadow-sm">
-            <h3 className="font-bold mb-3">🎮 2 Attempts Per Question</h3>
-            <p className="text-gray-600">Strategic guessing allowed</p>
+            <h3 className="font-bold mb-3">🎮 10 Questions per Quiz</h3>
+            <p className="text-gray-600">
+              Test your knowledge with 10 carefully selected questions. Think
+              fast, guess wisely, and aim for the highest score!
+            </p>
           </div>
           <div className="p-6 bg-white rounded-xl shadow-sm">
             <h3 className="font-bold mb-3">🏆 Live Leaderboards</h3>
@@ -78,7 +80,6 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }
