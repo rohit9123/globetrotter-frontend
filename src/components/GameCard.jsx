@@ -1,22 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Confetti from './Confetti';
 import axios from 'axios';
 
 export default function GameCard({ id, clues, options, onGuess }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [fact, setFact] = useState(''); // State to store the fun fact
+  const [validationState, setValidationState] = useState('idle'); // 'idle' | 'checking' | 'correct' | 'incorrect'
+  const [fact, setFact] = useState('');
+  const [timeoutId, setTimeoutId] = useState(null);
 
+  // Clear timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [timeoutId]);
 
-  // Handle user's answer selection
   const handleGuess = async (userGuess) => {
-    
     setSelectedAnswer(userGuess);
+    setValidationState('checking');
 
     try {
-      // Send the user's answer to the server
       const response = await axios.post(
         'https://globerotter-backend.onrender.com/api/game/check-answers',
         {
@@ -29,28 +33,37 @@ export default function GameCard({ id, clues, options, onGuess }) {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         }
-      )
+      );
 
-      
-      const result =  response.data;
-
-      // Update state based on the server's response
+      const result = response.data;
+      setFact(result.fact);
       onGuess(result.correct);
-      setIsCorrect(result.correct);
-      setFact(result.fact); // Set the fun fact from the server
-      setShowFeedback(true);
 
-      // Notify the parent component about the guess
-      
+      // Set validation state after animation frame
+      requestAnimationFrame(() => {
+        setValidationState(result.correct ? 'correct' : 'incorrect');
+        
+        // Set timeout for reset
+        const id = setTimeout(() => {
+          setSelectedAnswer(null);
+          setValidationState('idle');
+        }, 2000);
+        
+        setTimeoutId(id);
+      });
 
-      // Reset after 2 seconds
-      setTimeout(() => {
-        setSelectedAnswer(null);
-        setShowFeedback(false);
-      }, 2000);
     } catch (error) {
       console.error('Error checking answer:', error);
+      setValidationState('idle');
+      setSelectedAnswer(null);
     }
+  };
+
+  // Derived state for button classes
+  const getButtonState = (option) => {
+    if (selectedAnswer !== option) return 'idle';
+    if (validationState === 'checking') return 'checking';
+    return validationState;
   };
 
   return (
@@ -69,29 +82,32 @@ export default function GameCard({ id, clues, options, onGuess }) {
 
       {/* Answer Options */}
       <div className="grid gap-3">
-        {options.map((option) => (
-          <motion.button
-            key={option}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className={`p-3 rounded-lg text-left transition-colors
-              ${
-                selectedAnswer === option
-                  ? isCorrect
-                    ? 'bg-green-500 text-white'
-                    : 'bg-red-500 text-white'
-                  : 'bg-blue-100 hover:bg-blue-200'
-              }`}
-            onClick={() => handleGuess(option)}
-            disabled={selectedAnswer !== null}
-          >
-            {option}
-          </motion.button>
-        ))}
+        {options.map((option) => {
+          const state = getButtonState(option);
+          return (
+            <motion.button
+              key={option}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className={`p-3 rounded-lg text-left transition-colors duration-300
+                ${state === 'checking' ? 'bg-blue-300 text-white' : ''}
+                ${state === 'correct' ? 'bg-green-500 text-white' : ''}
+                ${state === 'incorrect' ? 'bg-red-500 text-white' : ''}
+                ${state === 'idle' ? 'bg-blue-100 hover:bg-blue-200' : ''}`}
+              onClick={() => handleGuess(option)}
+              disabled={validationState !== 'idle'}
+            >
+              {option}
+              {state === 'checking' && (
+                <span className="ml-2 animate-pulse">...</span>
+              )}
+            </motion.button>
+          );
+        })}
       </div>
 
       {/* Feedback Section */}
-      {showFeedback && (
+      {validationState !== 'idle' && validationState !== 'checking' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,26 +115,22 @@ export default function GameCard({ id, clues, options, onGuess }) {
         >
           <div className="flex items-center gap-2">
             <span className="text-2xl">
-              {isCorrect ? '🎉' : '😢'}
+              {validationState === 'correct' ? '🎉' : '😢'}
             </span>
             <p className="font-bold">
-              {isCorrect ? 'Correct! Well done!' : 'Oops! Try again!'}
+              {validationState === 'correct' ? 'Correct! Well done!' : 'Oops! Try again!'}
             </p>
           </div>
 
-          {/* Fun Fact */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <span className="font-semibold">📚 Did You Know?</span>
               <div className="flex-1 border-t border-dashed border-gray-300"></div>
             </div>
-            <p className="text-gray-700 leading-relaxed">
-              {fact}
-            </p>
+            <p className="text-gray-700 leading-relaxed">{fact}</p>
           </div>
 
-          {/* Confetti Animation */}
-          {isCorrect && <Confetti />}
+          {validationState === 'correct' && <Confetti />}
         </motion.div>
       )}
     </div>
