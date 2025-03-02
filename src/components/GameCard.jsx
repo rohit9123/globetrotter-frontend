@@ -18,7 +18,7 @@ export default function GameCard({ id, clues, options, onGuess }) {
     try {
       // Send the user's answer to the server
       const response = await axios.post(
-        'http://localhost:5000/api/game/check-answers',
+        'https://globerotter-backend.onrender.com/api/game/check-answers',
         {
           id,
           answer: userGuess,

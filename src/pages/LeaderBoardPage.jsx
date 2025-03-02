@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
 const LeaderboardPage = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -9,7 +10,7 @@ const LeaderboardPage = () => {
   const fetchLeaderboard = async (sortType) => {
     try {
       setIsLoading(true);
-      const response = await fetch(`http://localhost:5000/api/leaderboard/${sortType}`);
+      const response = await axios.get(`https://globerotter-backend.onrender.com/api/leaderboard/${sortType}`);
       const data = await response.json();
       setLeaderboard(data);
     } catch (error) {

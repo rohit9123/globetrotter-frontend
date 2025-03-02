@@ -38,7 +38,7 @@ export default function GamePage() {
 
   const getQuestions = async () => {
     try{
-      const response = await axios.get('http://localhost:5000/api/game/questions', {
+      const response = await axios.get('https://globerotter-backend.onrender.com/api/game/questions', {
         headers:{
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`

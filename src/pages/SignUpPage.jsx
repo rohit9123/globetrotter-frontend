@@ -39,7 +39,7 @@ export default function SignupPage() {
       setLoading(true);
       setError('');
 
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+      const response = await axios.post('https://globerotter-backend.onrender.com/api/auth/signup', {
         username: name,
         email: email,
         password: password

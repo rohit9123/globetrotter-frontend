@@ -15,7 +15,7 @@ export default function UserProfile() {
     
     async function fetchProfile() {
       try {
-        const response = await axios.get("http://localhost:5000/api/user/", {
+        const response = await axios.get("https://globerotter-backend.onrender.com/api/user/", {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem("token")}`,
             'Content-Type': 'application/json'
@@ -82,6 +82,10 @@ export default function UserProfile() {
 
         <div>
           <h2 className="text-3xl font-bold text-gray-800">{user?.username}</h2>
+          <p className="text-sm text-gray-600">
+            <span className="font-semibold text-blue-600">@</span>
+            {localStorage.getItem("username")}
+          </p>
           <p className="text-blue-600 font-medium">Level {profileData.level || 1}</p>
         </div>
       </div>
@@ -121,7 +125,7 @@ export default function UserProfile() {
       {/* Progress Bar */}
       <div className="mt-8">
         <div className="flex justify-between mb-2">
-          <span className="text-sm font-medium">correct answer ratio</span>
+          <span className="text-sm font-medium">Correct Answer Ratio</span>
           <span className="text-sm font-medium">
             {((profileData.correctAnswers / profileData.questionsAttempted) * 100 || 0).toFixed(1)}%
           </span>

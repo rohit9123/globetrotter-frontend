@@ -43,7 +43,7 @@ export default function LoginPage() {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/auth/login',
+        'https://globerotter-backend.onrender.com/api/auth/login',
         {
           email: data.email,
           password: data.password,
