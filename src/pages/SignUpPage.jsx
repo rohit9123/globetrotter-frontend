@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from '../schemas/authSchema';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
@@ -16,6 +16,7 @@ export default function SignupPage() {
   const [showPasswordFeedback, setShowPasswordFeedback] = useState(false);
   const [showEmailFeedback, setShowEmailFeedback] = useState(false);
   const authContext = useAuth();
+  const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(signupSchema),
@@ -47,12 +48,12 @@ export default function SignupPage() {
 
       // Redirect to home page after successful registration
       if(response.status === 201){
-        console.log("response",response.data);
         toast.success('Account created successfully!');
         authContext.login(
            response.data.token,
            response.data.user.username
         );
+        navigate('/');
       }
       
     } catch (err) {
