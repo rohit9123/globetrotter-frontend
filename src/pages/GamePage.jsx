@@ -17,20 +17,25 @@ export default function GamePage() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [questions, setQuestions] = useState([]);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState(0);
   const totalQuestions = questions.length;
 
   const handleGuess = (isCorrect) => {
     if (isCorrect) {
       setScore(prev => prev + 10);
+      setCorrectAnswers(prev => prev + 1);
       setShowConfetti(true);
+    } else {
+      setIncorrectAnswers(prev => prev + 1);
     }
-
+  
     // Move to next question after delay
     setTimeout(() => {
       setShowConfetti(false);
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(prev => prev + 1);
-      } else{
+      } else {
         setGameOver(true);
       }
     }, 2000);
@@ -101,7 +106,7 @@ export default function GamePage() {
       )}
       <div className="max-w-2xl mx-auto">
         {/* Combined Header */}
-        <GameHeader score={score} totalQuestions={totalQuestions} currentQuestion={currentQuestion} />
+        <GameHeader score={score} totalQuestions={totalQuestions} currentQuestion={currentQuestion} correctAnswers={correctAnswers} incorrectAnswers={incorrectAnswers}/>
   
         {/* GameCard */}
         <GameCard

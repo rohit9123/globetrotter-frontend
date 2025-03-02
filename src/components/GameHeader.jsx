@@ -5,11 +5,12 @@ import { FiCheck, FiX, FiStar } from 'react-icons/fi';
 export default function GameHeader({ 
   currentQuestion, 
   totalQuestions,
+  correctAnswers,
+  incorrectAnswers,
   score 
 }) {
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
-  const correctAnswers = Math.max(0, Math.floor(score / 10));
-  const incorrectAnswers = Math.max(0, currentQuestion - correctAnswers);
+
 
   return (
     <div className="mb-8 space-y-6">
