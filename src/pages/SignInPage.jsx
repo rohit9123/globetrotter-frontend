@@ -49,6 +49,9 @@ export default function LoginPage() {
           password: data.password,
         },
         {
+          withCredentials: true,
+        },
+        {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -57,9 +60,8 @@ export default function LoginPage() {
       // console.log(response.dat);
 
       if (response.status === 200) {
-        // Store authentication data
-        
-        authContext.login(response.data.token, response.data.user.username);
+      
+        authContext.login(response.data.token,response.data.user.username);
         // Redirect to dashboard
         toast.success('Login successful!'); 
         navigate('/');

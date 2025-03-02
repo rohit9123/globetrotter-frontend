@@ -1,7 +1,11 @@
-function UserAvatar({ user, size = 'md' }) {
+import { useAuth } from "../context/AuthContext";
+
+function UserAvatar() {
   // Get first letter of username or name
-  const initial = user?.username?.[0]?.toUpperCase() || user?.name?.[0]?.toUpperCase() || '?';
-  
+  const {userName} = useAuth();
+  const initial = userName ? userName[0].toUpperCase() : 'U';
+  console.log(userName);
+  const size = 'md';
   // Size classes
   const sizeClasses = {
     sm: 'w-8 h-8 text-sm',

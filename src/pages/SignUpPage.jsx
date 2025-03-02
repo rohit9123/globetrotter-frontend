@@ -43,14 +43,17 @@ export default function SignupPage() {
         username: name,
         email: email,
         password: password
+      },{
+        withCredentials: true,
       });
 
       // Redirect to home page after successful registration
       if(response.status === 201){
+        console.log("response",response.data);
         toast.success('Account created successfully!');
         authContext.login(
            response.data.token,
-          response.data.username
+           response.data.user.username
         );
       }
       

@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
+import UserAvatar from './useAvatar';
 
 export default function Header() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, userName, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
 
@@ -108,11 +109,7 @@ const MobileNavLink = ({ to, children }) => (
 const UserDropdown = ({ logout }) => (
   <div className="relative group">
     <button className="flex items-center space-x-2">
-      <img
-        src="/user-avatar.png"
-        alt="User"
-        className="h-8 w-8 rounded-full"
-      />
+      <UserAvatar  />
       <span className="text-gray-500 hover:text-gray-700">▼</span>
     </button>
     

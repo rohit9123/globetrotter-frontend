@@ -9,11 +9,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    setUserName(username);
     setIsAuthenticated(!!token);
   }, []);
 
   const login = (token, username) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('username', username);
     setUserName(username);
     setIsAuthenticated(true);
   };
@@ -25,7 +28,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated,userName, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

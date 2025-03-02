@@ -1,32 +1,55 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Confetti from './Confetti';
+import axios from 'axios';
 
-
-export default function GameCard({ clues, options,correctAnswer, fact,onGuess }) {
+export default function GameCard({ id, clues, options, onGuess }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [fact, setFact] = useState(''); // State to store the fun fact
 
 
   // Handle user's answer selection
   const handleGuess = async (userGuess) => {
+    
     setSelectedAnswer(userGuess);
-    
 
-    const correct = userGuess === correctAnswer;
-    
-    setIsCorrect(correct);
-    setShowFeedback(true);
-    
-    // Pass result to parent component
-    onGuess?.(correct);
-    
-    // Reset after 2 seconds
-    setTimeout(() => {
-      setSelectedAnswer(null);
-      setShowFeedback(false);
-    }, 2000);
+    try {
+      // Send the user's answer to the server
+      const response = await axios.post(
+        'http://localhost:5000/api/game/check-answers',
+        {
+          id,
+          answer: userGuess,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      )
+
+      
+      const result = await response.data;
+
+      // Update state based on the server's response
+      setIsCorrect(result.correct);
+      setFact(result.fact); // Set the fun fact from the server
+      setShowFeedback(true);
+
+      // Notify the parent component about the guess
+      onGuess(result.correct);
+
+      // Reset after 2 seconds
+      setTimeout(() => {
+        setSelectedAnswer(null);
+        setShowFeedback(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error checking answer:', error);
+    }
   };
 
   return (
@@ -80,20 +103,18 @@ export default function GameCard({ clues, options,correctAnswer, fact,onGuess })
             <p className="font-bold">
               {isCorrect ? 'Correct! Well done!' : 'Oops! Try again!'}
             </p>
-            
           </div>
-          
-          {/* Fun Fact (Add real data later) */}
-          <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="font-semibold">📚 Did You Know?</span>
-            <div className="flex-1 border-t border-dashed border-gray-300"></div>
-          </div>
-          <p className="text-gray-700 leading-relaxed">
-            {fact}
-          </p>
-        </div>
 
+          {/* Fun Fact */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span className="font-semibold">📚 Did You Know?</span>
+              <div className="flex-1 border-t border-dashed border-gray-300"></div>
+            </div>
+            <p className="text-gray-700 leading-relaxed">
+              {fact}
+            </p>
+          </div>
 
           {/* Confetti Animation */}
           {isCorrect && <Confetti />}
