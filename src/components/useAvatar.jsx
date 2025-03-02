@@ -4,7 +4,7 @@ function UserAvatar() {
   // Get first letter of username or name
   const {userName} = useAuth();
   const initial = userName ? userName[0].toUpperCase() : 'U';
-  console.log(userName);
+  // console.log(userName);
   const size = 'md';
   // Size classes
   const sizeClasses = {

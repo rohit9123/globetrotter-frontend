@@ -36,9 +36,27 @@ const LeaderboardPage = () => {
   };
 
   const buttonVariants = {
-    hover: { scale: 1.05 },
-    tap: { scale: 0.95 },
-    selected: { background: 'linear-gradient(45deg, #3B82F6, #6366F1)' },
+    rest: {
+      scale: 1,
+      backgroundColor: '#ffffff',
+      color: '#4b5563',
+      transition: { duration: 0.2 }
+    },
+    selected: {
+      background: 'linear-gradient(45deg, #3B82F6, #6366F1)',
+      color: '#ffffff',
+      scale: 1.05,
+      transition: { duration: 0.2 }
+    },
+    hover: {
+      scale: 1.05,
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+      transition: { duration: 0.2 }
+    },
+    tap: {
+      scale: 0.95,
+      transition: { duration: 0.1 }
+    }
   };
 
   return (
@@ -58,16 +76,12 @@ const LeaderboardPage = () => {
             <motion.button
               key={sortType}
               variants={buttonVariants}
-              initial={false}
-              animate={sortBy === sortType ? 'selected' : ''}
+              initial="rest"
+              animate={sortBy === sortType ? 'selected' : 'rest'}
               whileHover="hover"
               whileTap="tap"
               onClick={() => setSortBy(sortType)}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-                sortBy === sortType
-                  ? 'text-white'
-                  : 'bg-white text-gray-600 shadow-md hover:shadow-lg'
-              }`}
+              className="px-6 py-3 rounded-xl font-semibold shadow-md"
             >
               {sortType === 'top-scores' && '🏆 Most Score'}
               {sortType === 'most-correct' && '✅ Most Correct'}
