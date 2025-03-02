@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Leaderboard from './pages/LeaderBoardPage';
 import AboutPage from './pages/AboutPage';
+import ProfilePage from './pages/ProfilePage'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
               <Route path="/play" element={<GamePage />} />
               <Route path="/share" element={<SharePage />} />
             </Route>
+              <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </main>
       </div>

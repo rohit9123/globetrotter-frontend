@@ -32,15 +32,16 @@ export default function GameCard({ id, clues, options, onGuess }) {
       )
 
       
-      const result = await response.data;
+      const result =  response.data;
 
       // Update state based on the server's response
+      onGuess(result.correct);
       setIsCorrect(result.correct);
       setFact(result.fact); // Set the fun fact from the server
       setShowFeedback(true);
 
       // Notify the parent component about the guess
-      onGuess(result.correct);
+      
 
       // Reset after 2 seconds
       setTimeout(() => {

@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
 import UserAvatar from './useAvatar';
 
 export default function Header() {
-  const { isAuthenticated, userName, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
 
   return (
     <header className="bg-white shadow-sm fixed w-full top-0 z-50">
@@ -87,29 +86,43 @@ export default function Header() {
   );
 }
 
-// Helper components
-const NavLink = ({ to, children }) => (
-  <Link
-    to={to}
-    className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
-  >
-    {children}
-  </Link>
-);
+// ✅ FIX: Use `useLocation()` inside the component instead of passing it as a prop.
+const NavLink = ({ to, children }) => {
+  const location = useLocation(); // 👈 Get current route here
+  const isActive = location.pathname === to;
+  
+  return (
+    <Link
+      to={to}
+      className={`text-sm font-medium transition-colors ${
+        isActive ? 'text-blue-600 font-bold' : 'text-gray-500 hover:text-gray-700'
+      }`}
+    >
+      {children}
+    </Link>
+  );
+};
 
-const MobileNavLink = ({ to, children }) => (
-  <Link
-    to={to}
-    className="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-  >
-    {children}
-  </Link>
-);
+const MobileNavLink = ({ to, children }) => {
+  const location = useLocation(); // 👈 Get current route here
+  const isActive = location.pathname === to;
+
+  return (
+    <Link
+      to={to}
+      className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+        isActive ? 'text-blue-600 font-bold' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+      }`}
+    >
+      {children}
+    </Link>
+  );
+};
 
 const UserDropdown = ({ logout }) => (
   <div className="relative group">
     <button className="flex items-center space-x-2">
-      <UserAvatar  />
+      <UserAvatar />
       <span className="text-gray-500 hover:text-gray-700">▼</span>
     </button>
     
